@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon name="ellipsis-vertical" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Tarefas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-segment [(ngModel)]="type">
+        <ion-segment-button value="pending" layout="icon-start">
+          <ion-icon name="alert-circle"></ion-icon>
+          <ion-label>Pending</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="done" layout="icon-start">
+          <ion-icon name="checkmark-circle"></ion-icon>
+          <ion-label>Done</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-list *ngIf="type == 'pending'">
+    <ion-item-sliding *ngFor="let task of taskService.getTasks(); let i = index">
+      <ion-item *ngIf="!task.done">
+        <ion-label>{{task.value}}</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="task.done"></ion-checkbox>
+        <ion-badge color="warning" *ngIf="task.date.getDate()">
+          {{task.date.getDate() + "/" + (task.date.getMonth()+1)}}
+        </ion-badge>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="success" (click)="presentAlertPromptUpdate(i, task)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="presentAlertPromptDelete(i)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-list *ngIf="type == 'done'">
+    <ion-item-sliding *ngFor="let task of taskService.getTasks(); let i = index">
+      <ion-item *ngIf="task.done">
+        <ion-label>{{task.value}}</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="task.done"></ion-checkbox>
+        <ion-badge color="warning" *ngIf="task.date.getDate()">
+          {{task.date.getDate() + "/" + (task.date.getMonth()+1)}}
+        </ion-badge>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="success" (click)="presentAlertPromptUpdate(i, task)">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="presentAlertPromptDelete(i)">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="danger" (click)="presentAlertPromptAdd()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+
+</ion-content>
